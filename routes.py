@@ -3,9 +3,9 @@ from model import db, User
 from __init__ import app
 from werkzeug.security import generate_password_hash, check_password_hash
 
-@app.route("/", methods=["GET"])
+@app.route("/mainpage", methods=["GET", "POST"])
 def home():
-    return "Welcome to my Flask app!"
+    return "Welcome to Gusto.AI!"
 
 #register route
 @app.route("/register", methods=["POST", "GET"])
@@ -16,14 +16,14 @@ def register():
     user_exists = User.query.filter_by(username=username).first() #gets username from database
 
     if user_exists: #if username exists in database, return error
-        return jsonify({"message": "User already exists"}), 400
+        return jsonify({"message": "User already exists"}), 402
     
     hashed_password = generate_password_hash(password) #hash password
     new_user = User(username=username, password=hashed_password) #create new user
     db.session.add(new_user) #add new user to table
     db.session.commit() #commit changes
 
-    return jsonify({"id": new_user.id, "username": new_user.username, "password": new_user.password})
+    return jsonify({"id": new_user.id, "username": new_user.username})
 
 #login route
 @app.route("/login", methods=["POST"])
@@ -36,6 +36,6 @@ def login():
         return jsonify({"message": "Invalid username" }), 400
     
     if not check_password_hash(user.password, password): #if password does not match with user's password, return error
-        return jsonify({"message": "Invalid password", "error" : user.password }), 400
+        return jsonify({"message": "Invalid password", "error" : user.password }), 401
         
     return jsonify({"id": user.id, "username": user.username})

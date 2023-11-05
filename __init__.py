@@ -3,11 +3,12 @@ from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
 import os
 from dotenv import load_dotenv
-from flask_bcrypt import Bcrypt
+from flask_cors import CORS
 
 load_dotenv()
 
 app = Flask(__name__)
+CORS(app, supports_credentials=True)
 
 DB_USER = os.getenv('DB_USER')
 DB_PASS = os.getenv('DB_PASS')
