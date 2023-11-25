@@ -76,7 +76,7 @@ export default function LoginPage(){
                     <p className="small fw-normal mt-2 mb-0"><a href="/aboutUs" className="link-primary">Click</a> to know more about us! </p>
                   </div>
 
-                
+              
  
                 </form>
               </div>
