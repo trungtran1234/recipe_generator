@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from 'axios';
 import {useNavigate} from "react-router-dom";
  
-export default function LoginPage(){
+export default function LoginPage({ setToken }){
  
     const [username,setUsername] = useState('');
     const [password,setPassword] = useState('');
@@ -23,9 +23,8 @@ export default function LoginPage(){
                 password: password
             })
             .then(function (response) {
-                console.log(response);
+                localStorage.setItem('token', response.data.access_token);  // Store the token
                 setError(null);
-                //console.log(response.data);
                 navigate("/mainpage");
             })
             .catch(function (error) {

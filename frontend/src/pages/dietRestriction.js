@@ -3,12 +3,12 @@ import '../css/mainpage.css';
  
 import {Link} from 'react-router-dom';
 
-function dietRestriction(){
+function DietRestriction(){
  
   return (
-      <h1>hi</h1>
+      <h1>Diet Restrictions</h1>
             
   );
 }
 
-export default dietRestriction;
+export default DietRestriction;

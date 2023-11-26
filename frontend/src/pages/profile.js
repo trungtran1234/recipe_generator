@@ -1,14 +1,21 @@
 import React, { useRef } from "react";
-import '../css/mainpage.css';
- 
-import {Link} from 'react-router-dom';
+import '../css/mainpage.css'; 
+import {Link, useNavigate} from 'react-router-dom';
 
-function profile(){
- 
-  return (
-      <h1>hi</h1>
-            
-  );
+function Profile({ removeToken }){
+    const navigate = useNavigate();
+
+    const logMeOut = () => {
+        removeToken();
+        navigate('/');
+    };
+
+    return (
+        <div>
+            <h1>Profile</h1>
+            <button onClick={logMeOut}>Logout</button>
+        </div>
+    );
 }
 
-export default profile;
+export default Profile;
