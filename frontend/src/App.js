@@ -2,33 +2,49 @@ import React, { } from 'react';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 
 import LoginPage from './pages/login';
 import RegisterPage from './pages/register';
 import MainPage from './pages/mainpage';
 import NavBar from './pages/navbar';
-import dietRestriction from './pages/dietRestriction';
-import progress from './pages/progress';
-import pantry from './pages/pantry';
-import history from './pages/history';
-import profile from './pages/profile';
+import DietRestriction from './pages/dietRestriction';
+import Progress from './pages/progress';
+import Pantry from './pages/pantry';
+import History from './pages/history';
+import Profile from './pages/profile';
+import useToken from './useToken';
+import ProtectedRoute from './ProtectedRoute';
+
 
 function App() {
+  const { token, removeToken, setToken } = useToken();
   return (
-        <BrowserRouter>
-          <NavBar />
-          <Routes>
-            <Route path="/" element={<LoginPage />} />
-            <Route path="/register" element={<RegisterPage />} />
-            <Route path="/mainpage" element={<MainPage />} /> 
-            <Route path="/dietRestriction" element={<dietRestriction />} /> 
-            <Route path="/progress" element={<progress />} /> 
-            <Route path="/pantry" element={<pantry />} /> 
-            <Route path="/history" element={<history />} /> 
-            <Route path="/profile" element={<profile />} />
-          </Routes>
+    <BrowserRouter>
+            <LayoutWithConditionalNavBar />
+            <div className="App">
+                <Routes>
+                    <Route path="/" element={<LoginPage setToken={setToken} />} />
+                    <Route path="/register" element={<RegisterPage />} />
+                    <Route path="/mainpage" element={<ProtectedRoute> <MainPage /> </ProtectedRoute>} />
+                    <Route path="/dietRestriction" element={<ProtectedRoute> <DietRestriction /> </ProtectedRoute>} />
+                    <Route path="/progress" element={<ProtectedRoute> <Progress /> </ProtectedRoute>} />
+                    <Route path="/pantry" element={<ProtectedRoute> <Pantry /> </ProtectedRoute>} />
+                    <Route path="/history" element={<ProtectedRoute> <History /> </ProtectedRoute>} />
+                    <Route path="/profile" element={<ProtectedRoute><Profile removeToken={removeToken} /></ProtectedRoute>} />
+                </Routes>
+            </div>
         </BrowserRouter>
+    );
+}
+function LayoutWithConditionalNavBar() {
+  const location = useLocation();
+  const showNavBar = !['/', '/register'].includes(location.pathname);
+
+  return (
+      <>
+          {showNavBar && <NavBar />}
+      </>
   );
 }
 
