@@ -3,12 +3,12 @@ import '../css/mainpage.css';
  
 import {Link} from 'react-router-dom';
 
-function pantry(){
+function Pantry(){
  
   return (
-      <h1>hi</h1>
+      <h1>Pantry</h1>
             
   );
 }
 
-export default pantry;
+export default Pantry;

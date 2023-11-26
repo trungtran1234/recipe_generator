@@ -3,12 +3,12 @@ import '../css/mainpage.css';
  
 import {Link} from 'react-router-dom';
 
-function progress(){
+function Progress(){
  
   return (
-      <h1>hi</h1>
+      <h1>My Progress</h1>
             
   );
 }
 
-export default progress;
+export default Progress;

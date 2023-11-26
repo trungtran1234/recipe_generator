@@ -3,12 +3,12 @@ import '../css/mainpage.css';
  
 import {Link} from 'react-router-dom';
 
-function history(){
+function History(){
  
   return (
-      <h1>hi</h1>
+      <h1>Recipe history</h1>
             
   );
 }
 
-export default history;
+export default History;
