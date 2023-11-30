@@ -1,7 +1,7 @@
 from flask import jsonify, request
-from flask_jwt_extended import create_access_token, get_jwt,get_jwt_identity, unset_jwt_cookies, jwt_required, JWTManager
+from flask_jwt_extended import create_access_token, get_current_user, get_jwt,get_jwt_identity, unset_jwt_cookies, jwt_required, JWTManager
 import mysqlx
-from model import db, User
+from model import PantryItem, db, User
 from __init__ import app
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -38,8 +38,6 @@ def register():
     db.session.add(new_user) #add new user to table
     db.session.commit() #commit changes
 
-    access_token = create_access_token(identity=user.id) #create access token
-
     return jsonify({"id": new_user.id, "username": new_user.username})
 
 #login route
@@ -66,28 +64,28 @@ def logout():
     return response
 
 #add ingredient
-@app.route("/addIngredient", methods=["POST"])
-def add_ingredient():
+@app.route('/pantry', methods=['POST'])
+@jwt_required()
+def add_pantry_item():
     data = request.json
-    cursor = db.cursor()
+    current_user_id = get_jwt_identity()
 
-    query = """
-    INSERT INTO ingredients (userId, categoryId, ingredientName, remaining)
-    VALUES (%s, %s, %s, %s)
-    """
-    values = (
-        data['userId'],
-        data['categoryId'],
-        data['ingredientName'],
-        data['remaining']
+    new_item = PantryItem(
+        user_id=current_user_id,
+        ingredient_name=data['ingredient_name'],
+        quantity=data['quantity'],
+        unit=data['unit'],
+        category=data['category']
     )
-    
-    try:
-        cursor.execute(query, values)
-        db.commit()
-        return jsonify({"success": True, "response": "Ingredient added"}), 200
-    except mysqlx.connector.Error as err:
-        print("Something went wrong: {}".format(err))
-        return jsonify({"success": False, "response": str(err)}), 500
-    finally:
-        cursor.close()
+    db.session.add(new_item)
+    db.session.commit()
+    return jsonify(new_item.to_dict()), 201
+
+@app.route('/pantry', methods=['GET'])
+@jwt_required()
+def get_pantry_items():
+    current_user_id = get_jwt_identity()
+    items = PantryItem.query.filter_by(user_id=current_user_id).all()
+    return jsonify([item.to_dict() for item in items])
+
+
