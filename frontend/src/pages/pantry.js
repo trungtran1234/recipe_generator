@@ -119,9 +119,9 @@ const Pantry = () => {
         {suggestions.length > 0 && (
           <ul style={{
             position: 'absolute',
-            top: '100%', // Position just below the input field
-            left: 0, // Align with the left edge of the input field
-            width: '100%', // Match the width of the input field
+            top: '100%',
+            left: 0,
+            width: '100%',
             backgroundColor: 'white',
             boxShadow: '0px 4px 5px rgba(0,0,0,0.2)',
             margin: 0,
