@@ -1,9 +1,7 @@
-import React, { useRef } from "react";
+import React from "react";
 import '../css/mainpage.css';
 import axios from "axios";
  
-import {Link} from 'react-router-dom';
-
 function MainPage(){
 
   const token = localStorage.getItem('token'); 

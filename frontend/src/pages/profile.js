@@ -1,6 +1,6 @@
-import React, { useRef } from "react";
+import React from "react";
 import '../css/mainpage.css'; 
-import {Link, useNavigate} from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
 
 function Profile({ removeToken }){
     const navigate = useNavigate();

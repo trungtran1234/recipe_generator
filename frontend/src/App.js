@@ -18,7 +18,7 @@ import ProtectedRoute from './ProtectedRoute';
 
 
 function App() {
-  const { token, removeToken, setToken } = useToken();
+  const { removeToken, setToken } = useToken();
   return (
     <BrowserRouter>
             <LayoutWithConditionalNavBar />
