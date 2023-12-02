@@ -70,6 +70,14 @@ def add_pantry_item():
     data = request.json
     current_user_id = get_jwt_identity()
 
+    existing_item = PantryItem.query.filter_by(
+        user_id=current_user_id,
+        ingredient_name=data['ingredient_name'],
+    ).first()
+
+    if existing_item:
+        return jsonify({"message" : "Ingredient already in pantry"}), 409
+
     new_item = PantryItem(
         user_id=current_user_id,
         ingredient_name=data['ingredient_name'],
@@ -81,6 +89,7 @@ def add_pantry_item():
     db.session.commit()
     return jsonify(new_item.to_dict()), 201
 
+#get ingredients
 @app.route('/pantry', methods=['GET'])
 @jwt_required()
 def get_pantry_items():
@@ -88,4 +97,34 @@ def get_pantry_items():
     items = PantryItem.query.filter_by(user_id=current_user_id).all()
     return jsonify([item.to_dict() for item in items])
 
+#delete ingredient
+@app.route('/pantry/<int:item_id>', methods=['DELETE'])
+@jwt_required()
+def delete_pantry_item(item_id):
+    current_user_id = get_jwt_identity()
+
+    item_to_delete = PantryItem.query.filter_by(id=item_id, user_id=current_user_id).first()
+
+    if item_to_delete:
+        db.session.delete(item_to_delete)
+        db.session.commit()
+        return jsonify({'message': 'Item deleted successfully'}), 200
+    else:
+        return jsonify({'message': 'Item not found'}), 404
+
+#favorite ingredient
+@app.route('/pantry/<int:item_id>/favorite', methods=['PATCH'])
+@jwt_required()
+def toggle_favorite(item_id):
+    current_user_id = get_jwt_identity()
+    item = PantryItem.query.filter_by(id=item_id, user_id=current_user_id).first()
+
+    if not item:
+        return jsonify({"message": "Item not found"}), 404
+
+    data = request.json
+    item.favorite = data.get('favorite', item.favorite)
+
+    db.session.commit()
+    return jsonify(item.to_dict()), 200
 

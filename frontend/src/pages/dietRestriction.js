@@ -1,8 +1,6 @@
-import React, { useRef } from "react";
+import React from "react";
 import '../css/mainpage.css';
  
-import {Link} from 'react-router-dom';
-
 function DietRestriction(){
  
   return (
