@@ -1,17 +1,16 @@
 .nav-link-custom {
-    color: black; /* Default text color */
-    padding: 10px;
-    display: block;
-    transition: background-color 0.3s ease;
-  }
-  
-  .nav-link-custom:hover, .nav-link-custom:focus {
-    background-color: green; /* Background color on hover or focus */
-    color: white; /* Text color on hover or focus */
-  }
-  
-  .active-nav-link {
-    background-color: green; /* Background color for active link */
-    color: white; /* Text color for active link */
-  }
-  
+  color: black; /* Default text color */
+  padding: 10px;
+  display: block;
+  transition: background-color 0.3s ease;
+}
+
+.nav-link-custom:hover, .nav-link-custom:focus {
+  background-color: green; /* Background color on hover or focus */
+  color: white; /* Text color on hover or focus */
+}
+
+.active-nav-link {
+  background-color: green; /* Background color for active link */
+  color: white; /* Text color for active link */
+}

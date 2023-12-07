@@ -6,14 +6,14 @@ const categories = ["Vegetable", "Dairy", "Fruit", "Grain", "Protein", "Other"];
 
 const fetchPantryItems = async () => {
   try {
-    const response = await axios.get('http://127.0.0.1:5000/pantry', {
+    const response = await axios.get("http://127.0.0.1:5000/pantry", {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem('token')}`
-      }
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
     });
     return response.data;
   } catch (error) {
-    console.error('Error fetching pantry items:', error);
+    console.error("Error fetching pantry items:", error);
     return [];
   }
 };
@@ -50,9 +50,9 @@ const fetchSuggestions = async (query, setSuggestionsCallback) => {
     url: 'https://edamam-food-and-grocery-database.p.rapidapi.com/auto-complete',
     params: { q: query, limit: '5' },
     headers: {
-      'X-RapidAPI-Key': process.env.REACT_APP_RAPIDAPI_KEY,
-      'X-RapidAPI-Host': 'edamam-food-and-grocery-database.p.rapidapi.com'
-    }
+      "X-RapidAPI-Key": process.env.REACT_APP_RAPIDAPI_KEY,
+      "X-RapidAPI-Host": "edamam-food-and-grocery-database.p.rapidapi.com",
+    },
   };
 
   try {
@@ -98,10 +98,10 @@ const fetchFoodId = async (ingredientName) => {
 };
 
 const Pantry = () => {
-  const [ingredientName, setIngredientName] = useState('');
-  const [quantity, setQuantity] = useState('');
-  const [unit, setUnit] = useState('');
-  const [category, setCategory] = useState('');
+  const [ingredientName, setIngredientName] = useState("");
+  const [quantity, setQuantity] = useState("");
+  const [unit, setUnit] = useState("");
+  const [category, setCategory] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [pantryItems, setPantryItems] = useState([]);
   const [nutritionInfo, setNutritionInfo] = useState(null);
@@ -153,6 +153,7 @@ const Pantry = () => {
   const handleIngredientChange = async (e) => {
     const value = e.target.value;
     setIngredientName(value);
+    setIsIngredientSelected(false);
     if (value.length >= 2) {
       debouncedFetchSuggestions(value, setSuggestions);
     } else {
@@ -160,6 +161,15 @@ const Pantry = () => {
     }
   };
 
+  const handleAutocompleteClick = async (suggestion) => {
+    setIngredientName(suggestion);
+    setSuggestions([]);
+    setIsIngredientSelected(true);
+    const { measures } = await fetchFoodId(suggestion);
+    const hasUnitMeasure = measures.some(measure => measure.uri === "http://www.edamam.com/ontologies/edamam.owl#Measure_unit");
+    setHasUnitMeasure(hasUnitMeasure);
+  };
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrorMessage(' ');

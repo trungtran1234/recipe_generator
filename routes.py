@@ -1,27 +1,19 @@
-from flask import jsonify, request
-from flask_jwt_extended import create_access_token, get_current_user, get_jwt,get_jwt_identity, unset_jwt_cookies, jwt_required, JWTManager
-import mysqlx
-from model import PantryItem, db, User
-from __init__ import app
-from werkzeug.security import generate_password_hash, check_password_hash
+from flask_sqlalchemy import SQLAlchemy
+from uuid import uuid4
+from __init__ import db
 
 
-@app.route("/mainpage", methods=["GET", "POST"])
-@jwt_required()
-def home():
-    return "Welcome to Gusto.AI!"
 
-@app.route('/token', methods=["POST"])
-def create_token():
-    email = request.json.get("email", None)
-    password = request.json.get("password", None)
-    if email != "test" or password != "test":
-        return {"msg": "Wrong email or password"}, 401
+def get_uuid():
+    return uuid4().hex
 
-    access_token = create_access_token(identity=email)
-    response = {"access_token":access_token}
-    return response
+class User(db.Model):
+    __tablename__ = 'users'
+    id = db.Column(db.String(32), unique = True, primary_key=True, default=get_uuid)
+    username = db.Column(db.String(32), unique=True, nullable=False)
+    password = db.Column(db.Text, nullable=False)
 
+<<<<<<< HEAD
 #register route
 @app.route("/register", methods=["POST", "GET"])
 def register():
@@ -127,4 +119,29 @@ def toggle_favorite(item_id):
 
     db.session.commit()
     return jsonify(item.to_dict()), 200
+=======
+# models.py
 
+class PantryItem(db.Model):
+    __tablename__ = 'pantry_items'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.String(32), db.ForeignKey('users.id'))
+    ingredient_name = db.Column(db.String(100), nullable=False)
+    quantity = db.Column(db.Float, nullable=False)
+    unit = db.Column(db.String(50))
+    category = db.Column(db.String(100)) 
+    favorite = db.Column(db.Boolean, default=False)
+    selected = db.Column(db.Boolean, default=False)
+>>>>>>> 75ac179 (added recipe generation)
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "user_id": self.user_id,
+            "ingredient_name": self.ingredient_name,
+            "quantity": self.quantity,
+            "unit": self.unit,
+            "category": self.category,
+            "favorite": self.favorite,
+            "selected": self.selected
+        }
