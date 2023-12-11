@@ -1,0 +1,19 @@
+.nutrition-list-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    text-align: center;
+}
+
+.progress-bar {
+    width: 600px;
+    height: 30px;
+    font-size: 12px;
+    color: black;
+    background-color: gray;
+}
+
+.custom-progress-bar .progress-bar {
+    color: black;
+}

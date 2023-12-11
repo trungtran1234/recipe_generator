@@ -1,0 +1,61 @@
+.green-button {
+    background-color: lightgray;
+    color: black; 
+    padding: 5px 10px;
+    border: 1px solid black; 
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+.green-button:hover {
+    background-color: #15b115; /* Replace with the hover background color */
+  }
+
+.deleteButton {
+    background-color: transparent;
+    color: black; 
+    border: none;
+    padding: 5px 10px;
+    border: 2px solid black; 
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.deleteButton:hover {
+    background-color: rgb(144, 38, 38); /* Replace with the hover background color */
+}
+
+.ingredient{
+    background-color: transparent;
+    color: black; 
+    padding-top: 1px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.ingredient:hover {
+    background-color: rgb(66, 144, 38);
+}
+
+.favoriteButton {
+    background-color: transparent;
+    color: orange; 
+    padding: 6px 12px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    font-size: 17px;
+}
+
+.grayButton {
+    background-color: lightgray;
+    color: black; 
+    padding: 5px 10px;
+    border: 1px solid black; 
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.grayButton:hover {
+    background-color: gray; /* Replace with the hover background color */
+}

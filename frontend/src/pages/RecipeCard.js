@@ -8,7 +8,7 @@ function RecipeCard({ recipe }) {
     return (
       <div className="recipe-card">
         <h4>{recipe.recipe.label}</h4>
-        <img src={recipe.recipe.image} alt={recipe.recipe.label} />
+        <img style={{maxWidth: '60%'}}src={recipe.recipe.image} alt={recipe.recipe.label} />
         <p>Cook time: {cookTime}</p>
         <p>{recipe.recipe.cuisineType}</p>
         <p>{recipe.recipe.mealType}</p>

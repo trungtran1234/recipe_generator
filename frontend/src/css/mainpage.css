@@ -1,16 +1,38 @@
 .nav-link-custom {
-  color: black; /* Default text color */
+  color: black;
   padding: 10px;
   display: block;
   transition: background-color 0.3s ease;
 }
 
 .nav-link-custom:hover, .nav-link-custom:focus {
-  background-color: green; /* Background color on hover or focus */
-  color: white; /* Text color on hover or focus */
+  background-color: green;
+  color: white;
 }
 
 .active-nav-link {
-  background-color: green; /* Background color for active link */
-  color: white; /* Text color for active link */
+  background-color: green;
+  color: white;
+}
+
+.checkbox-container-main {
+  border: 1px solid black;
+  padding: 10px;
+  padding-left: 70px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  border-radius: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  max-width: 700px;
+  margin: auto;
+  background-color: rgb(222, 245, 224)
+}
+
+.checkbox-item-main {
+  text-align: left;
+  flex-basis: calc(50% - 2px); 
+  margin: 1px;
+  box-sizing: border-box;
 }

@@ -12,7 +12,7 @@
 /build
 
 # misc
-pycache
+__pycache__
 .env
 .DS_Store
 .env.local

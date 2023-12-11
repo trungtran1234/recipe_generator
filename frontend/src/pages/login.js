@@ -72,7 +72,6 @@ export default function LoginPage({ setToken }){
                   <div className="text-center text-lg-start mt-4 pt-2">
                     <button type="button" className="btn btn-success btn-md" onClick={logInUser} >Sign In</button>
                     <p className="small fw-bold mt-5 mb-10">Don't have an account? <a href="/register" className="link-success">Sign up</a></p>
-                    <p className="small fw-normal mt-2 mb-0"><a href="/aboutUs" className="link-primary">Click</a> to know more about us! </p>
                   </div>
 
               
