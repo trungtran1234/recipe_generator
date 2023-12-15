@@ -5,12 +5,15 @@ import ProgressBar from 'react-bootstrap/ProgressBar';
 import '../css/progress.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../css/buttons.css';
+import { utcToZonedTime, format } from 'date-fns-tz';
 
 const Progress = () => {
   const [dailyIntake, setDailyIntake] = useState(null);
   const [nutritionGoals, setNutritionGoals] = useState(null);
+  const [date, setDate] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
-
+  
   useEffect(() => {
       const fetchData = async () => {
           try {
@@ -18,7 +21,11 @@ const Progress = () => {
               const options = { timeZone: 'America/Los_Angeles', year: 'numeric', month: '2-digit', day: '2-digit' };
               const dateUTC = new Date();
               const date = new Date(dateUTC.toLocaleString('en-US', options)).toISOString().split('T')[0];
-              console.log(date);
+              const zonedDate = utcToZonedTime(dateUTC, 'America/Los_Angeles');
+              const displayDate = format(zonedDate, 'EEEE, MM/dd/yyyy');
+              setIsLoading(false);
+              setDate(displayDate);
+              console.log(displayDate);
 
               const intakeResponse = await axios.get(`http://127.0.0.1:5000/nutrition/intake/${date}`, {
                   headers: { Authorization: `Bearer ${token}` }
@@ -26,7 +33,7 @@ const Progress = () => {
               if (intakeResponse.data) {
               setDailyIntake(intakeResponse.data);
               } else {
-                setDailyIntake({"calories": 0, "carbs": 0, "fat": 0, "protein": 0, "sugar": 0, "sodium": 0, "cholesterol": 0});
+                setDailyIntake({"calories": 0, "carbs": 0, "fat": 0, "protein": 0, "sugar": 0, "sodium": 0, "cholesterol": 0, });
               }
               const goalsResponse = await axios.get('http://127.0.0.1:5000/nutrition/goal', {
                   headers: { Authorization: `Bearer ${token}` }
@@ -70,8 +77,10 @@ const Progress = () => {
 
     return (
     <div>
-            <h2 sytyle={{marginTop: 30}}>Nutritional Progress</h2>
+            <h2 sytyle={{marginTop: 40}}>Nutritional Progress</h2>
+            <h3 sytyle={{marginTop: 50}}>{date}</h3>
             <div>
+                {isLoading ? <p>Loading...</p> : null}
                 {dailyIntake && nutritionGoals ? (
                   <div className="nutrition-list-container">
                     <ul style={{listStyleType: 'none', textAlign: 'left', marginTop: 30}}>
@@ -119,7 +128,7 @@ const Progress = () => {
                     />
                     </ul>
                   </div>
-                ) :        ( <p>Loading...</p> )}
+                ) :        ( <p>Input nutrition goals here:</p> )}
 
              
                 <button className="grayButton" onClick={editGoal}>Edit Goals</button>

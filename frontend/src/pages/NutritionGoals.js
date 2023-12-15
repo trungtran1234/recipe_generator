@@ -42,6 +42,7 @@ const NutritionGoals = () => {
                 Authorization: `Bearer ${localStorage.getItem("token")}`,
               },
             });
+            navigate('/progress');
           } catch (error) {
             console.error("Erorr updating goal:", error);
           }
@@ -57,13 +58,12 @@ const NutritionGoals = () => {
 
             <h2>Set Your Nutrition Goals</h2>
             <form onSubmit={handleSubmit}>
-                Weight Goal: <input type="number" name="weight" value={goals.weight} onChange={handleChange}  /> <br /><br></br>
-                Calories Goal: <input type="number" name="calories" value={goals.calories} onChange={handleChange} /> <br /><br></br>
-                Protein Goal: <input type="number" name="protein" value={goals.protein} onChange={handleChange} /> <br /><br></br>
-                Carbs Goal: <input type="number" name="carbs" value={goals.carbs} onChange={handleChange} /> <br /><br></br>
-                Sugar Goal: <input type="number" name="sugar" value={goals.sugar} onChange={handleChange} /> <br /><br></br>
-                Sodium Goal: <input type="number" name="sodium" value={goals.sodium} onChange={handleChange} /> <br /><br></br>
-                Cholesterol Goal: <input type="number" name="cholesterol" value={goals.cholesterol} onChange={handleChange} /> <br />
+                Calories Goal: <input type="number" name="calories" value={goals.calories} onChange={handleChange} /> calories <br /><br></br>
+                Protein Goal: <input type="number" name="protein" value={goals.protein} onChange={handleChange} /> g <br /><br></br>
+                Carbs Goal: <input type="number" name="carbs" value={goals.carbs} onChange={handleChange} /> g<br /><br></br>
+                Sugar Goal: <input type="number" name="sugar" value={goals.sugar} onChange={handleChange} /> g<br /><br></br>
+                Sodium Goal: <input type="number" name="sodium" value={goals.sodium} onChange={handleChange} /> mg<br /><br></br>
+                Cholesterol Goal: <input type="number" name="cholesterol" value={goals.cholesterol} onChange={handleChange} /> mg<br />
 
                 <button style={{marginTop: 20}}className="green-button" type="submit">Save Goals</button>
             </form>

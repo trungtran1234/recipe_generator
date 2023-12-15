@@ -2,13 +2,16 @@ import React, { useEffect, useState } from "react";
 import axios from 'axios';
 import '../css/checkbox.css';
 import '../css/buttons.css';
+import { set } from "date-fns";
 
 function DietRestriction() {
 
     const restrictions = ["alcohol-free", "celery-free", "crustcean-free", "dairy-free", "DASH", "egg-free", "fish-free", "fodmap-free", "gluten-free", "keto-friendly", "kidney-friendly", "khoser", "low-fat", "low-potassium", "low-sugar", "lupine-free", "Mediterranean", "mollusk-free", "no-oil-added", "paleo", "peanut-free", "pescatarian", "pork-free", "red-meat-free", "sesame-free", "shellfish-free", "soy-free", "sugar-conscious", "sulfite-free", "tree-nut-free", "vegan", "vegetarian", "wheat-free"]; // Add more as needed
     const [selectedRestrictions, setSelectedRestrictions] = useState([]);
+    const [statusMessage, setStatusMessage] = useState('');
 
     useEffect(() => {
+        setStatusMessage('');
         const fetchAndSetRestrictions = async () => {
           try {
             const restrictions = await fetchRestrictions();
@@ -47,6 +50,7 @@ function DietRestriction() {
 
     const handleSubmit = (event) => {
         event.preventDefault();
+        setStatusMessage('Updated restrictions successfully');
         axios.post('http://127.0.0.1:5000/restrictions/update', {
             restrictions: selectedRestrictions
         }, {
@@ -78,6 +82,9 @@ function DietRestriction() {
                     </div>
                 ))}
             </div>
+            {statusMessage && (
+        <div style={{ color: "green", marginBottom: "10px" }}>{statusMessage}</div>
+      )}
             <button className="green-button" style={{ justifyContent: 'center', marginTop: 15 }} onClick={handleSubmit}>Update Restrictions</button>
         </div>
     );

@@ -7,22 +7,10 @@ from __init__ import app
 from werkzeug.security import generate_password_hash, check_password_hash
 import pytz
 
-
 @app.route("/mainpage", methods=["GET", "POST"])
 @jwt_required()
 def home():
     return "Welcome to Gusto.AI!"
-
-@app.route('/token', methods=["POST"])
-def create_token():
-    email = request.json.get("email", None)
-    password = request.json.get("password", None)
-    if email != "test" or password != "test":
-        return {"msg": "Wrong email or password"}, 401
-
-    access_token = create_access_token(identity=email)
-    response = {"access_token":access_token}
-    return response
 
 #register route
 @app.route("/register", methods=["POST", "GET"])
@@ -57,7 +45,8 @@ def login():
         
     access_token = create_access_token(identity=user.id) #create access token
     return jsonify(access_token = access_token), 200
-
+ 
+#logout route
 @app.route("/logout", methods=["POST"])
 @jwt_required()
 def logout():
@@ -138,16 +127,22 @@ def changePassword():
 
     try:
         data = request.json
+      
         current_user_id = get_jwt_identity()
+        
         user = User.query.get(current_user_id)
+       
         user.password = data['new_password']
         hashed_password = generate_password_hash( user.password)
         user.password = hashed_password
+       
         db.session.commit()
 
+       
         return jsonify({"success": True, "response": "Password updated"}), 200
 
     except Exception as e:
+      
         print("Error:", str(e))
         return jsonify({"success": False, "response": str(e)}), 500 
 
@@ -158,14 +153,26 @@ def changePassword():
 def changeUsername():
 
     try:
+       
         data = request.json
+    
         current_user_id = get_jwt_identity()
+       
         user = User.query.get(current_user_id)
+
+        existing_user = User.query.filter_by(username=data['new_Username']).first()
+
+        if existing_user:
+            return jsonify({"success": False, "response": "Username already exists, please enter a new one"}), 400
+        
         user.username = data['new_Username']
+       
         db.session.commit()
+      
         return jsonify({"success": True, "response": "Username updated"}), 200
 
     except Exception as e:
+       
         print("Error:", str(e))
         return jsonify({"success": False, "response": str(e)}), 500
 
@@ -190,6 +197,7 @@ def select_item():
         print("Error:", str(e))
         return jsonify({"success": False, "response": str(e)}), 500
     
+#bulk update selected status of items (for select all and clear all buttons)
 @app.route('/mainpage/bulk-update', methods=['PATCH'])
 @jwt_required()
 def bulk_update_pantry_items():
@@ -200,7 +208,6 @@ def bulk_update_pantry_items():
         new_selected_status = data.get('selected') 
         print(new_selected_status)
 
-        # Update the selected status for all items in item_ids
         PantryItem.query.filter(PantryItem.id.in_(item_ids), PantryItem.user_id == user_id).update({'selected': new_selected_status}, synchronize_session=False)
         db.session.commit()
 
@@ -218,21 +225,18 @@ def add_or_update_recipe():
     recipe_uri = recipe_data.get('recipe').get('uri')
     print(recipe_uri)
 
-    # Check if the recipe already exists for the user
     existing_recipe = Recipe.query.filter_by(
         user_id=user_id, 
         recipe_uri=recipe_uri
     ).first()
     print(existing_recipe)
     if existing_recipe:
-        # Update the existing recipe
         existing_recipe.recipe_data = recipe_data
         print(favorited)
         existing_recipe.favorited = favorited
         db.session.commit()
         return jsonify(existing_recipe.to_dict()), 200
     else:
-        # Add a new recipe
         new_recipe = Recipe(
             user_id=user_id,
             recipe_data=recipe_data,
@@ -261,7 +265,7 @@ def get_favorites():
     print([recipe.to_dict() for recipe in recipes])
     return jsonify([recipe.to_dict() for recipe in recipes])
 
-#get favorite status
+#get favorited status of recipe
 @app.route('/recipe/favorite-status', methods=['GET'])
 @jwt_required()
 def get_favorite_status():
@@ -274,7 +278,7 @@ def get_favorite_status():
     else:
         return jsonify({"message": "Recipe not found"}), 404
     
-# Update user dietary restrictions
+#update user dietary restrictions
 @app.route('/restrictions/update', methods=['POST'])
 @jwt_required()
 def update_dietary_restrictions():
@@ -298,6 +302,7 @@ def update_dietary_restrictions():
         db.session.rollback()
         return jsonify({"error": str(e)}), 500
     
+#get user dietary restrictions
 @app.route('/restrictions/get', methods=['GET'])
 @jwt_required()
 def get_dietary_restrictions():
@@ -308,6 +313,7 @@ def get_dietary_restrictions():
         return jsonify({"message": "No dietary restrictions found"}), 404
     return jsonify(user_restriction.restriction), 200
 
+#get nutrition goal
 @app.route('/nutrition/goal', methods=['GET'])
 @jwt_required()
 def get_nutrition_goal():
@@ -319,6 +325,7 @@ def get_nutrition_goal():
     else:
         return jsonify({}), 404
 
+#set nutrition goal
 @app.route('/nutrition/goal', methods=['POST'])
 @jwt_required()
 def set_nutrition_goal():
@@ -354,6 +361,7 @@ def set_nutrition_goal():
     db.session.commit()
     return jsonify({"message": "Nutrition goal updated successfully"}), 200
 
+#add daily intake
 @app.route('/nutrition/intake', methods=['POST'])
 @jwt_required()
 def add_daily_intake():
@@ -388,7 +396,7 @@ def add_daily_intake():
     db.session.commit()
     return jsonify({"message": "Daily intake updated successfully"}), 200
 
-
+#get daily intake based on date
 @app.route('/nutrition/intake/<date>', methods=['GET'])
 @jwt_required()
 def get_daily_intake(date):
@@ -400,7 +408,39 @@ def get_daily_intake(date):
         return jsonify({"message": "Invalid date format"}), 400
 
     intake = DailyIntake.query.filter_by(user_id=user_id, date=date_obj).first()
+    print(intake)
     if intake:
         return jsonify(intake.serialize())
     else:
-        return jsonify({"message": "No intake found for this date"}), 404
+        intake = DailyIntake(
+            user_id=user_id,
+            date=date,
+            weight = 0,
+            calories=0,
+            carbs=0,
+            fat=0,
+            protein=0,
+            sugar=0,
+            sodium=0,
+            cholesterol=0
+        )
+        db.session.add(intake)
+        db.session.commit()
+        return jsonify(intake.serialize())
+
+#update ingredient quantity and unit
+@app.route('/pantry/<int:item_id>', methods=['PATCH'])
+@jwt_required()
+def update_pantry_item(item_id):
+    current_user_id = get_jwt_identity()
+    data = request.json
+
+    item_to_update = PantryItem.query.filter_by(id=item_id, user_id=current_user_id).first()
+    
+    if item_to_update:
+        item_to_update.quantity = data.get('quantity', item_to_update.quantity)
+        item_to_update.unit = data.get('unit', item_to_update.unit)
+        db.session.commit()
+        return jsonify({'message': 'Item updated successfully'}), 200
+    else:
+        return jsonify({'message': 'Item not found'}), 404

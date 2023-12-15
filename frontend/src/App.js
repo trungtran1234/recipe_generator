@@ -1,10 +1,7 @@
 import React, { } from 'react';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-
-
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
-
 import LoginPage from './pages/login';
 import RegisterPage from './pages/register';
 import MainPage from './pages/mainpage';
@@ -44,9 +41,6 @@ function App() {
                     <Route path="/recipeDetails" element ={<ProtectedRoute> <RecipeDetails /> </ProtectedRoute>} />
                     <Route path="/favorite" element ={<ProtectedRoute> <Favorite /> </ProtectedRoute>} />
                     <Route path="/goal" element ={<ProtectedRoute> <NutritionGoals /> </ProtectedRoute>} />
-
-
-
                 </Routes>
             </div>
         </BrowserRouter>

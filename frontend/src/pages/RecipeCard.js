@@ -1,5 +1,6 @@
 import '../css/recipeCard.css';
 import { useNavigate } from 'react-router-dom';
+import '../css/buttons.css';
 
 function RecipeCard({ recipe }) {
     const navigate = useNavigate();
@@ -12,10 +13,9 @@ function RecipeCard({ recipe }) {
         <p>Cook time: {cookTime}</p>
         <p>{recipe.recipe.cuisineType}</p>
         <p>{recipe.recipe.mealType}</p>
-        <button onClick={() => navigate('/recipeDetails', { state: { recipe: recipe } })}>View details</button>
+        <button className="grayButton" onClick={() => navigate('/recipeDetails', { state: { recipe: recipe } })}>View details</button>
       </div>
     );
   }
   
-  export default RecipeCard;
-  
+export default RecipeCard;

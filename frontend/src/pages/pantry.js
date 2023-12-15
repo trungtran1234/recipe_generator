@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import '../css/buttons.css';
+import { set } from "date-fns";
 
 const categories = ["Vegetable", "Dairy", "Fruit", "Grain", "Protein", "Other"];
 
@@ -124,6 +125,9 @@ const Pantry = () => {
   const [foodImg, setFoodImg] = useState(null);
   const [isIngredientSelected, setIsIngredientSelected] = useState(false);
   const [hasUnitMeasure, setHasUnitMeasure] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [editQuantity, setEditQuantity] = useState('');
+  const [editUnit, setEditUnit] = useState('');
 
 
   const measureURIMap = {
@@ -174,7 +178,7 @@ const Pantry = () => {
     const hasUnitMeasure = measures.some(measure => measure.uri === "http://www.edamam.com/ontologies/edamam.owl#Measure_unit");
     setHasUnitMeasure(hasUnitMeasure);
   };
-  
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrorMessage(" ");
@@ -220,29 +224,26 @@ const Pantry = () => {
   };
 
   const handleItemSelection = async (selectedItem) => {
+    setIsEditMode(false);
     const { foodId, foodImg } = await fetchFoodId(selectedItem.ingredient_name);
     const measureURI = measureURIMap[selectedItem.unit.toLowerCase()];
-    console.log(measureURI);
-    console.log(selectedItem.ingredient_name);
-    console.log(selectedItem.unit.toLowerCase());
-    console.log(
-      "https://api.edamam.com/api/food-database/v2/nutrients?" +
-        "app_id=" +
-        process.env.REACT_APP_FOODAPI_ID +
-        "&app_key=" +
-        process.env.REACT_APP_FOODAPI_KEY
-    );
-    setSelectedItem(selectedItem.ingredient_name);
+    const { measures } = await fetchFoodId(selectedItem.ingredient_name);
+    const hasUnitMeasure = measures.some(measure => measure.uri === "http://www.edamam.com/ontologies/edamam.owl#Measure_unit");
+    setIngredientName(selectedItem.ingredient_name);
+    setHasUnitMeasure(hasUnitMeasure);
+    setSelectedItem(selectedItem);
     setSelectedQuantity(selectedItem.quantity);
     setSelectedUnit(selectedItem.unit);
+    setEditQuantity(selectedItem.quantity);
+    setEditUnit(selectedItem.unit);
     if (foodId && measureURI) {
       try {
         const response = await axios.post(
           "https://api.edamam.com/api/food-database/v2/nutrients?" +
-            "app_id=" +
-            process.env.REACT_APP_FOODAPI_ID +
-            "&app_key=" +
-            process.env.REACT_APP_FOODAPI_KEY,
+          "app_id=" +
+          process.env.REACT_APP_FOODAPI_ID +
+          "&app_key=" +
+          process.env.REACT_APP_FOODAPI_KEY,
           {
             ingredients: [
               {
@@ -252,13 +253,6 @@ const Pantry = () => {
               },
             ],
           },
-          {
-            headers: {
-              "X-RapidAPI-Key": process.env.REACT_APP_RAPIDAPI_KEY,
-              "X-RapidAPI-Host":
-                "edamam-food-and-grocery-database.p.rapidapi.com",
-            },
-          }
         );
         setNutritionInfo(response.data);
         setFoodImg(foodImg);
@@ -283,6 +277,92 @@ const Pantry = () => {
       setPantryItems(groupByCategory(updatedItems));
     } catch (error) {
       console.error("Error deleting pantry item:", error);
+    }
+  };
+
+  const handleUpdateItem = async () => {
+    setErrorMessage(" ");
+    if (!editQuantity || !editUnit) {
+      setErrorMessage("Please fill out all fields");
+      return;
+    }
+    const numericQuantity = Number(editQuantity);
+    if (isNaN(numericQuantity) || numericQuantity <= 0) {
+      setErrorMessage("Quantity must be a valid number");
+      return;
+    }
+    try {
+      const response = await axios.patch(`http://127.0.0.1:5000/pantry/${selectedItem.id}`, {
+        quantity: editQuantity,
+        unit: editUnit,
+      }, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      if (response.status === 200) {
+        const updatedItem = response.data;
+
+        setPantryItems((prevItems) => {
+          const updatedItems = { ...prevItems };
+          const itemCategory = Object.keys(updatedItems).find(category => 
+            updatedItems[category].some(item => item.id === selectedItem.id)
+          );
+            if (itemCategory) {
+            updatedItems[itemCategory] = updatedItems[itemCategory].map((item) => {
+              if (item.id === selectedItem.id) {
+                return { ...item, quantity: editQuantity, unit: editUnit };
+              }
+              return item;
+            });
+          }
+  
+          return updatedItems;
+        });
+        updateNutritionInformation(selectedItem.ingredient_name, editQuantity, editUnit);
+        setSelectedQuantity(editQuantity);
+        setSelectedUnit(editUnit);
+        setIsEditMode(false);
+      }
+    } catch (error) {
+      console.error("Error updating pantry item:", error);
+    }
+  };
+
+  const updateNutritionInformation = async (ingredientName, quantity, unit) => {
+    const { foodId, foodImg, measures } = await fetchFoodId(ingredientName);
+    const measureURI = measureURIMap[unit.toLowerCase()];
+    console.log("m",measureURI);
+    console.log("u",unit.toLowerCase());
+    console.log("q", quantity);
+    console.log("n",ingredientName);
+    console.log("f",foodId);
+  
+    if (foodId && measureURI) {
+      try {
+        const nutritionResponse = await axios.post(
+          "https://api.edamam.com/api/food-database/v2/nutrients?" +
+          "app_id=" + process.env.REACT_APP_FOODAPI_ID +
+          "&app_key=" + process.env.REACT_APP_FOODAPI_KEY,
+          {
+            ingredients: [
+              {
+                quantity: quantity,
+                measureURI: measureURI,
+                foodId: foodId,
+              },
+            ],
+          },
+        );
+        console.log(nutritionResponse.data);
+        setNutritionInfo(nutritionResponse.data);
+      } catch (error) {
+        console.error("Error fetching updated nutrition info:", error);
+        setNutritionInfo(null);
+      }
+    } else {
+      console.error("FoodId or Measure URI not found for ingredient");
+      setNutritionInfo(null);
     }
   };
 
@@ -378,7 +458,6 @@ const Pantry = () => {
             value={unit}
             onChange={(e) => setUnit(e.target.value)}
           >
-
             <option value="">Select Unit</option>
             {hasUnitMeasure && <option value="unit">{ingredientName}</option>}
             <option value="g">Gram</option>
@@ -428,7 +507,7 @@ const Pantry = () => {
                       }}
                     >
                       <button
-                        className = "deleteButton"
+                        className="deleteButton"
                         onClick={() => deletePantryItem(item.id)}
                         style={{ display: "inline" }}
                       >
@@ -443,6 +522,7 @@ const Pantry = () => {
                         }}
                       >
                         {item.ingredient_name} - {item.quantity} {item.unit}
+
                       </div>
                       <button
                         className="favoriteButton"
@@ -468,12 +548,41 @@ const Pantry = () => {
                 alt="food image"
                 loading="lazy"
                 src={foodImg}
-                style={{ maxWidth: "50%", height: "auto" }}
+                style={{ maxWidth: "50%", height: "auto", marginBottom: 20 }}
               />)}
               <h5>
                 <strong>
-                  {selectedItem} - {selectedQuantity} {selectedUnit}
+                  {selectedItem.ingredient_name} - {selectedQuantity} {selectedUnit}
                 </strong>
+                <button style={{marginLeft: 10, marginBottom: 10}}className="grayButton" onClick={() => setIsEditMode(!isEditMode)}>Edit</button><br></br>
+                {isEditMode && (
+                  <>
+                    <input className="inputField"
+                      type="number"
+                      value={editQuantity}
+                      style={{marginBottom: 15}}
+                      onChange={(e) => setEditQuantity(e.target.value)}
+                    />
+                    <select
+                      className="selectField"
+                      value={editUnit}
+                      onChange={(e) => setEditUnit(e.target.value)}
+                    >
+                      <option value="">Select Unit</option>
+                      {hasUnitMeasure && <option value="unit">{ingredientName}</option>}
+                      <option value="g">Gram</option>
+                      <option value="oz">Ounce</option>
+                      <option value="lb">Pound</option>
+                      <option value="kg">Kilogram</option>
+                    </select>
+                    <br></br>
+                    {errorMessage && (
+        <div style={{ color: "red", marginBottom: "10px" }}>{errorMessage}</div>
+      )}
+                    <button style={{marginRight: 10}}className="green-button" onClick={handleUpdateItem}>Save</button>
+                    <button className="grayButton" onClick={() => setIsEditMode(false)}>Cancel</button>
+                  </>
+                )}
               </h5>
               <br></br>
               <p>

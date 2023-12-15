@@ -3,17 +3,18 @@ from flask_sqlalchemy import SQLAlchemy
 from uuid import uuid4
 from __init__ import db
 
-
-
+#for hashing
 def get_uuid():
     return uuid4().hex
 
+#User model
 class User(db.Model):
     __tablename__ = 'users'
     id = db.Column(db.String(32), unique = True, primary_key=True, default=get_uuid)
     username = db.Column(db.String(32), unique=True, nullable=False)
     password = db.Column(db.Text, nullable=False)
 
+#Pantry model
 class PantryItem(db.Model):
     __tablename__ = 'pantry_items'
     id = db.Column(db.Integer, primary_key=True)
@@ -36,7 +37,8 @@ class PantryItem(db.Model):
             "favorite": self.favorite,
             "selected": self.selected
         }
-    
+
+#Recipe model
 class Recipe(db.Model):
     __tablename__ = 'recipes'
     id = db.Column(db.Integer, primary_key=True)
@@ -54,7 +56,7 @@ class Recipe(db.Model):
             "recipe_uri": self.recipe_uri
 
         }
-
+#Restriction model
 class Restriction(db.Model):
     __tablename__ = 'restrictions'
     id = db.Column(db.Integer, primary_key=True)
@@ -62,6 +64,7 @@ class Restriction(db.Model):
     restriction = db.Column(db.JSON, nullable=False)
     user = db.relationship('User', backref=db.backref('restrictions', lazy=True))
 
+#Nutrition goal model
 class NutritionGoal(db.Model):
     __tablename__ = 'nutrition_goals'
     id = db.Column(db.Integer, primary_key=True)
@@ -89,7 +92,8 @@ class NutritionGoal(db.Model):
             "cholesterol": self.cholesterol,
             "last_updated": self.last_updated.strftime("%Y-%m-%d")
         }
-
+    
+#Daily intake model
 class DailyIntake(db.Model):
     __tablename__ = 'daily_intakes'
     id = db.Column(db.Integer, primary_key=True)
@@ -116,5 +120,6 @@ class DailyIntake(db.Model):
             "sodium": self.sodium,
             "cholesterol": self.cholesterol
         }
+
 
 

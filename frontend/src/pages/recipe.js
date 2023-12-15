@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate, useLocation } from 'react-router-dom';
 import RecipeCard from './RecipeCard';
+import '../css/buttons.css';
 
 function Recipe() {
   const location = useLocation();
@@ -14,7 +15,7 @@ function Recipe() {
 
   return (
     <div>
-      <button onClick={navigateBack}>Back</button>
+      <button className="grayButton" onClick={navigateBack}>Back</button>
       <div className="recipes-container">
         {recipes.map((recipe, index) => (
           <div key={index}>

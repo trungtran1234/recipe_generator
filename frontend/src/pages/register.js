@@ -43,7 +43,7 @@ export default function RegisterPage(){
                 <form>
                     <p className="fs-4"><strong>Welcome</strong></p>
                   <div className="d-flex flex-row align-items-center justify-content-center justify-content-lg-start">
-                    <p className="fs-6 fw-normal mb-20 me-3">Create an account</p>
+                    <p className="fs-6 fw-normal mb-20 me-3"><strong>Create an account</strong></p>
                   </div>
 
                   {error && <div className="alert alert-danger">{error}</div>}
@@ -61,7 +61,6 @@ export default function RegisterPage(){
                     <button type="button" className="btn btn-success btn-md" onClick={() => registerUser()} >Sign Up</button>
                     <p className="small fw-bold mt-2 pt-1 mb-0">Already have an account? <a href="/" className="link-success">Sign In</a></p>
                   </div>
- 
                 </form>
               </div>
             </div>

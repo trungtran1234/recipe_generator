@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import '../css/buttons.css';
 
 function History() {
 
@@ -35,7 +36,7 @@ function History() {
           <li key={index} style={{ border: '3px black solid', marginBottom: 15, padding: 20, borderRadius: 15, backgroundColor: '#69b869'}}>
             <h4>{recipe.recipe_data.recipe.label}</h4>
             <img style={{maxWidth: 150, border: '2px black solid'}}src={recipe.recipe_data.recipe.image} alt={recipe.recipe_data.recipe.label}/><br></br>
-            <button style={{marginTop: 15}}onClick={() => goToRecipeDetails(recipe.recipe_data)}>View details</button>
+            <button className='grayButton' style={{marginTop: 15}}onClick={() => goToRecipeDetails(recipe.recipe_data)}>View details</button>
           </li>
         ))}
       </ul>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import '../css/buttons.css';
 
 function RecipeDetails() {
     const location = useLocation();
@@ -35,7 +36,7 @@ function RecipeDetails() {
         const fetchFavoriteStatus = async () => {
             try {
                 const response = await axios.get(`http://127.0.0.1:5000/recipe/favorite-status`, {
-                    params: { recipeUri: recipe.recipe.uri }, // Assuming `uri` is your unique identifier
+                    params: { recipeUri: recipe.recipe.uri }, 
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem("token")}`,
                     },
@@ -44,9 +45,9 @@ function RecipeDetails() {
                 setIsFavorited(response.data.favorited);
             } catch (error) {
                 console.error("Error fetching favorite status:", error);
+                setIsFavorited(false);
             }
         };
-        
         fetchFavoriteStatus();
         console.log("Favorited status:", isFavorited);
     }, []);
@@ -72,16 +73,19 @@ function RecipeDetails() {
     };
 
     const handleToggleFavorite = async () => {
-        const response = await axios.post('http://127.0.0.1:5000/recipe', {
-            recipe_data: recipe,
-            favorited: !isFavorited  // Toggle the favorite status
-        }, {
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-        });
-        console.log(response.data.favorited);
-        setIsFavorited(response.data.favorited);
+        setIsFavorited(!isFavorited);
+        try {
+            const response = await axios.post('http://127.0.0.1:5000/recipe', {
+                recipe_data: recipe,
+                favorited: !isFavorited
+            }, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
+            });
+        } catch (error) {
+            console.error("Error toggling favorite:", error);
+        }
     };
 
     const navigateBack = () => {
@@ -90,7 +94,7 @@ function RecipeDetails() {
 
     return (
         <div>
-            <button style={{ position: 'absolute', left: 50, marginTop: 15 }} onClick={navigateBack}>Back</button>
+            <button className="grayButton" style={{ position: 'absolute', left: 50, marginTop: 15 }} onClick={navigateBack}>Back</button>
             <h1 style={{ marginTop: 15 }}>{recipe.recipe.label}</h1>
             <img src={recipe.recipe.image} alt={recipe.recipe.label} />
             <p>Cook time: {cookTime}</p>
