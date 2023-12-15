@@ -1,5 +1,5 @@
 ## (Plan for future: deploy to working website) ##
-## A website that generates recipes for users based on their ingredients at hand ##
+## A website that generates recipes based on the user's available ingredients ##
 
 This website is designed to streamline the search for a recipe that works for you. There are many difficulties that a cook encounters when trying to find a recipe online, such as website navigation, missing ingredients, dietary restrictions, time available, and a lack of nutritional information. GustoAI is designed to overcome these difficulties and make finding recipes that suit your needs as easy as possible!
 
