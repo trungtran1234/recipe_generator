@@ -54,6 +54,18 @@ def logout():
     unset_jwt_cookies(response)
     return response
 
+#get username
+@app.route('/profile', methods=['GET'])
+@jwt_required()
+def get_username():
+    current_user_id = get_jwt_identity()
+    user = User.query.get(current_user_id)
+    if user:
+        return jsonify(user.username), 200
+    else:
+        return jsonify({"message": "User not found"}), 404
+
+
 #add ingredient
 @app.route('/pantry', methods=['POST'])
 @jwt_required()
