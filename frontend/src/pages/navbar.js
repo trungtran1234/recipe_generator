@@ -2,12 +2,10 @@ import React from "react";
 import '../css/mainpage.css';
 import { Navbar, Nav, Container } from 'react-bootstrap';
 import { NavLink, Link } from 'react-router-dom';
+import { IoPersonOutline } from "react-icons/io5";
+import { FiHome } from "react-icons/fi";
 
 function NavBar() {
-  let imgs = [
-    'https://drive.google.com/uc?id=1mZUqACEgvmxyBZqWnib_bFRfd6PLBvzW',
-    'https://drive.google.com/uc?id=1gRErwQ6Qpq7XTHS5tYV56efmXcYD5dSM'
-  ];
 
   return (
     <Navbar collapseOnSelect expand="lg" className="bg-body-light" style={{ borderBottom: '1px solid black' }}>
@@ -19,7 +17,9 @@ function NavBar() {
             <NavLink to="/progress" className="nav-link nav-link-custom" activeClassName="active-nav-link">My Progress</NavLink>
             <div className="col-md-6 col-lg-2 col-xl-1">
                 <Link to="/mainpage">
-                    <img src={imgs[0]} loading="lazy" className="img-fluid" alt="Main Page"  style={{ maxWidth: '100px', height: 'auto' }}/>
+                  <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'  , fontSize: '1.5em', color: 'black', maginLeft: '20px'}}>
+                  <FiHome />
+                  </div>
                 </Link>
             </div>
             <NavLink to="/pantry" className="nav-link nav-link-custom" activeClassName="active-nav-link">Pantry</NavLink>
@@ -27,7 +27,9 @@ function NavBar() {
             <NavLink to="/history" className="nav-link nav-link-custom" activeClassName="active-nav-link">History</NavLink>
             <div className="col-md-5 col-lg-1 col-xl-1">
                 <Link to="/profile">
-                    <img src={imgs[1]} loading="lazy" className="img-fluid" alt="Profile" style={{ maxWidth: '36px', height: 'auto' }}/>
+                  <div style={{marginLeft: '13px', marginBottom: '5px', fontSize: '1.2em', color: 'black'}}>
+                    <IoPersonOutline />
+                    </div>
                 </Link>
             </div>          
             </Nav>

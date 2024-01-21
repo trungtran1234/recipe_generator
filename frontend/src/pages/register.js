@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from 'axios';
 import {useNavigate} from "react-router-dom";
+import logo from '../asset/recipelogo.png';
  
 export default function RegisterPage(){
  
@@ -26,10 +27,7 @@ export default function RegisterPage(){
             }
         });
     };
-     
-    let imgs = [
-        'https://drive.google.com/uc?id=1mZUqACEgvmxyBZqWnib_bFRfd6PLBvzW',
-    ];
+
      
   return (
     <div>
@@ -37,7 +35,7 @@ export default function RegisterPage(){
           <div className="container-fluid h-custom">
             <div className="row d-flex justify-content-center align-items-center h-100">
             <div className="col-md-9 col-lg-6 col-xl-5">
-                <img alt='logo' src={imgs[0]} className="img-fluid"/>
+                <img alt='logo' src={logo} className="img-fluid"/>
               </div>
               <div className="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
                 <form>
