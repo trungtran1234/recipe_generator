@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "/recipe_generator/static/css/main.1fc69077.css",
+    "main.js": "/recipe_generator/static/js/main.84594cb3.js",
+    "static/js/787.cda612ba.chunk.js": "/recipe_generator/static/js/787.cda612ba.chunk.js",
+    "static/media/recipelogo.png": "/recipe_generator/static/media/recipelogo.7fbf69386a9ca3189d53.png",
+    "index.html": "/recipe_generator/index.html",
+    "main.1fc69077.css.map": "/recipe_generator/static/css/main.1fc69077.css.map",
+    "main.84594cb3.js.map": "/recipe_generator/static/js/main.84594cb3.js.map",
+    "787.cda612ba.chunk.js.map": "/recipe_generator/static/js/787.cda612ba.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.1fc69077.css",
+    "static/js/main.84594cb3.js"
+  ]
+}
