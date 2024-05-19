@@ -1,0 +1,10 @@
+Flask==3.0.3
+python-dotenv==1.0.1
+SQLAlchemy==2.0.30
+mysql-connector-python==8.4.0
+Flask-Cors==4.0.1
+Flask-SQLAlchemy==3.1.1
+pytz==2024.1
+Routes==2.5.1
+Flask-JWT-Extended==4.6.0
+mysqlx==2.2.0
