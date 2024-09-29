@@ -3,7 +3,7 @@
 
 This website is designed to streamline the search for a recipe that works for you. There are many difficulties that a cook encounters when trying to find a recipe online, such as website navigation, missing ingredients, dietary restrictions, time available, and a lack of nutritional information. GustoAI is designed to overcome these difficulties and make finding recipes that suit your needs as easy as possible!
 
-To start creating recipes, you must first create an account and log in. Then you provide GustoAI with all the ingredients you have access to by entering them in the "Pantry" tab.
+To start creating recipes, you must first create an account and log in. Then you provide all the ingredients you have access to by entering them in the "Pantry" tab.
 Next, in the "Diet Restriction" tab you can provide dietary restrictions and allergies to apply those restrictions in the recipe generation. 
 Optionally, you can set nutritional goals on the "My Progress" tab and the website will automatically track the nutrients of the recipes you cook. 
 Finally, the mainpage - shown on the navigation bar as the logo - is where you generate the recipes! 
